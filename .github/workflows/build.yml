@@ -35,6 +35,9 @@ jobs:
     - name: Build Spring Boot App (Gradle)
       run: ./gradlew clean build
 
+    - name: List build/libs directory
+      run: ls -l build/libs/
+
     # 5. Docker 로그인
     - name: Log in to Docker Hub
       uses: docker/login-action@v2
@@ -45,7 +48,7 @@ jobs:
     # 6. Docker 이미지 빌드 및 태그
     - name: Build Docker Image
       run: |
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/bamboo-be:latest .
+        docker build --build-arg JAR_FILE=build/libs/BambooClub-0.0.1-SNAPSHOT.jar -t ${{ secrets.DOCKERHUB_USERNAME }}/bamboo-be:latest .
 
     # 7. Docker 이미지 푸시
     - name: Push Docker Image
