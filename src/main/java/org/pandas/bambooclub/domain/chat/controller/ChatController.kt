@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*
 class ChatController(
     private val chatService: ChatService,
 ) {
-    @PostMapping("/chat")
+    @PostMapping("/chats")
     suspend fun chat(
         @Validated @RequestBody request: ChatRequest,
     ): ResponseEntity<ChatResponse> {
