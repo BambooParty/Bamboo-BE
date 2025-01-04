@@ -31,7 +31,7 @@ class OpenAIClient(
                 "messages": [
                     {
                         "role": "system",
-                        "content": "${mbti}가 ENTP인 사람에게 잘 통하도록 상담해줘."
+                        "content": "mbti가 ${mbti}인 사람에게 잘 통하도록 상담해줘."
                     },
                     {
                         "role": "user",
