@@ -15,10 +15,20 @@ import org.springframework.web.bind.annotation.*
 class ChatController(
     private val chatService: ChatService,
 ) {
-    @PostMapping("/chat")
+    @PostMapping("/chats")
     suspend fun chat(
         @Validated @RequestBody request: ChatRequest,
     ): ResponseEntity<ChatResponse> {
         return ResponseEntity(chatService.chat(request), HttpStatus.OK)
+    }
+
+    @GetMapping("/chats")
+    fun getChats(
+        @RequestParam userId: String,
+        @RequestParam chatRoomId: String,
+        @RequestParam page: Int,
+        @RequestParam size: Int,
+    ): ResponseEntity<*> {
+        return ResponseEntity(chatService.getChats(userId, chatRoomId, page, size), HttpStatus.OK)
     }
 }

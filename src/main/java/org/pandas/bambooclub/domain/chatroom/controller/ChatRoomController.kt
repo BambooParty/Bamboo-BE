@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.*
 class ChatRoomController(
     private val chatRoomService: ChatRoomService,
 ) {
-    @PostMapping("/chatroom")
+    @PostMapping("/chatrooms")
     fun createChatRoom(
         @Validated @RequestBody request: ChatRoomRequest,
     ): ResponseEntity<*> {
         return ResponseEntity(chatRoomService.createChatRoom(request), HttpStatus.OK)
     }
 
-    @GetMapping("/chatroom")
+    @GetMapping("/chatrooms")
     fun getChatRooms(
         @RequestParam userId: String,
         @RequestParam page: Int,
