@@ -23,6 +23,8 @@ class OpenAIClient(
     suspend fun sendMessage(
         mbti: String,
         content: String,
+        previousContent: String,
+        @Value("\${api.script:}") script: String = "",
     ): OpenAIResponse {
         val requestBody =
             """
@@ -31,11 +33,11 @@ class OpenAIClient(
                 "messages": [
                     {
                         "role": "system",
-                        "content": "mbti가 ${mbti}인 사람에게 잘 통하도록 상담해줘."
+                        "content": "mbti가 ${mbti}인 사람에게 잘 통하도록 상담하기 ${script}하도록"
                     },
                     {
                         "role": "user",
-                        "content": "$content"
+                        "content": "이전 내용과 자연스럽게 채팅이 되는듯 잘 이어지도록 채팅하듯이 상담해줘. 이전 내용은 ${previousContent}이고 이번 내용은 ${content}이야"
                     }
                 ]
             }
