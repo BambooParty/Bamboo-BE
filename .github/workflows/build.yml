@@ -33,7 +33,10 @@ jobs:
 
     # 4. 프로젝트 빌드 (Gradle)
     - name: Build Spring Boot App (Gradle)
-      run: ./gradlew clean build -x test -PAPI_KEY=${{ secrets.API_KEY }} -PMONGODB_URI=${{ secrets.MONGODB_URI }}
+      run: ./gradlew clean build -x test
+      env:
+        API_KEY: ${{ secrets.API_KEY }}
+        MONGODB_URI: ${{ secrets.MONGODB_URI }}
 
     - name: List build/libs directory
       run: ls -l build/libs/
