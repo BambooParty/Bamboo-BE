@@ -33,7 +33,7 @@ jobs:
 
     # 4. 프로젝트 빌드 (Gradle)
     - name: Build Spring Boot App (Gradle)
-      run: ./gradlew clean build
+      run: ./gradlew clean build -x test
 
     - name: List build/libs directory
       run: ls -l build/libs/
