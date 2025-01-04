@@ -21,4 +21,14 @@ class ChatController(
     ): ResponseEntity<ChatResponse> {
         return ResponseEntity(chatService.chat(request), HttpStatus.OK)
     }
+
+    @GetMapping("/chats")
+    fun getChats(
+        @RequestParam userId: String,
+        @RequestParam chatRoomId: String,
+        @RequestParam page: Int,
+        @RequestParam size: Int,
+    ): ResponseEntity<*> {
+        return ResponseEntity(chatService.getChats(userId, chatRoomId, page, size), HttpStatus.OK)
+    }
 }
