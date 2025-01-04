@@ -1,0 +1,10 @@
+services:
+  mongo:
+    image: mongo:latest
+    container_name: bamboo
+    ports:
+      - "27019:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: testpassword1234
+      MONGO_INITDB_DATABASE: bamboo
