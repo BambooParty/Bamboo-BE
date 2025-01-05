@@ -19,8 +19,8 @@ public class BoardService {
 
     public PostList getPostList(String mbti, String userId) {
         List<PostDetail> result = null;
-        if (userId == null) {//mbti를 MbtiCharacters으로 분류
-            MbtiCharacters mbtiOption = MbtiCharacters.makeMbti(mbti);
+        if (userId == null || userId.isBlank()) {//mbti를 MbtiCharacters으로 분류
+            result = boardRepository.findByMbtiIn(MbtiCharacters.mbtis(mbti));
             //DB에서 Mbti별로 조회
         } else {
             //DB에서 userId로 조회

@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface BoardRepository extends MongoRepository<PostDetail, String> {
-List<PostDetail> findByMbti(String mbti);
+List<PostDetail> findByMbtiIn(List<String> mbtis);
 List<PostDetail> findByUserId(String userId);
 PostDetail findByPostId(String postId);
 

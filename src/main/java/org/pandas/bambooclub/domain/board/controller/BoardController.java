@@ -48,11 +48,10 @@ private final BoardRepository boardRepository;
         int score = RiskService.getRiskScore(post.getContent());
         post.setRiskScore(score);
         post.setDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMM")));
-        boardService.createPost(post);
         return new ResponseEntity<>(
                 ApiResponse.builder().status(HttpStatus.CREATED)
                         .data(PostRegister.builder()
-                                .post(post)
+                                .post(boardService.createPost(post))
                                 .build())
                         .build(), HttpStatus.CREATED);
     }
