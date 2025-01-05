@@ -152,4 +152,35 @@ class ChatService(
             }
             .toList()
     }
+
+    fun getRecentChats(
+        principal: UserPrincipal,
+        page: Int,
+        size: Int,
+    ): List<ChatResponse> {
+        val chatRoom = chatRoomService.getChatRoom(principal)
+        val chatRoomId = chatRoom.id!!
+        val pageable =
+            PageRequest.of(
+                page,
+                size,
+                Sort.by(
+                    Sort.Order.desc("createdAt"),
+                ),
+            )
+        val chats = chatRepository.findAllByUserIdAndChatRoomId(principal.userId, chatRoomId, pageable)
+        return chats.stream()
+            .map { chat ->
+                ChatResponse(
+                    id = chat.id,
+                    userId = chat.userId,
+                    mbti = chat.mbti,
+                    chatRoomId = chat.chatRoomId,
+                    content = chat.content,
+                    chatType = chat.chatType,
+                    createdAt = chat.createdAt.toString(),
+                )
+            }
+            .toList()
+    }
 }
