@@ -13,10 +13,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.pandas.bambooclub.global.Define.TEXT_COMPLETION_URL;
-
 public class DataSetService {
     private static final ObjectMapper objectMapper = new ObjectMapper();
+    public static final String TEXT_COMPLETION_URL = "https://api.openai.com/v1/chat/completions";
     @Value("${openai.api-key}")
     private static String OPENAI_API_KEY;
     public String createDataSet() throws Exception {

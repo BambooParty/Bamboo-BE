@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
-import static org.pandas.bambooclub.global.Define.EMBEDDING_URL;
 
 public class OpenAiEmbeddingService {
     private static final ObjectMapper objectMapper = new ObjectMapper();
+    public static final String EMBEDDING_URL = "https://api.openai.com/v1/embeddings";
     @Value("${openai.api-key}")
     private static String OPENAI_API_KEY;
 
