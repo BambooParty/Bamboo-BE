@@ -14,6 +14,13 @@ interface ChatRepository : MongoRepository<Chat, String> {
         chatType: ChatType,
     ): List<Chat>
 
+    fun findAllByUserIdAndChatRoomIdAndChatType(
+        userId: String,
+        chatRoomId: String,
+        chatType: ChatType,
+        pageable: Pageable,
+    ): List<Chat>
+
     fun findAllByUserIdAndChatRoomId(
         userId: String,
         chatRoomId: String,

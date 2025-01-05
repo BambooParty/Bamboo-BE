@@ -33,11 +33,11 @@ class OpenAIClient(
                 "messages": [
                     {
                         "role": "system",
-                        "content": "mbti가 ${mbti}인 사람에게 잘 통하도록 상담하기 ${script}하도록"
+                        "content": "Provide counseling that is effective for people with $mbti personality type, using the approach of $script"
                     },
                     {
                         "role": "user",
-                        "content": "이전 내용과 자연스럽게 채팅이 되는듯 잘 이어지도록 채팅하듯이 상담해줘. 이전 내용은 ${previousContent}이고 이번 내용은 ${content}이야"
+                        "content": "previousContext: $previousContent, currentContent: $content"
                     }
                 ]
             }
