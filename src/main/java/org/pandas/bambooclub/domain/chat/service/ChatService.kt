@@ -182,5 +182,6 @@ class ChatService(
                 )
             }
             .toList()
+            .reversed()
     }
 }
