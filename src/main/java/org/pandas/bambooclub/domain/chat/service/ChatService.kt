@@ -1,5 +1,7 @@
+
 package org.pandas.bambooclub.domain.chat.service
 
+import org.pandas.bambooclub.domain.chat.dto.ChatRequest
 import org.pandas.bambooclub.domain.chat.dto.ChatResponse
 import org.pandas.bambooclub.domain.chat.dto.OpenAIResponse
 import org.pandas.bambooclub.domain.chat.model.Chat
@@ -23,7 +25,7 @@ class ChatService(
 ) {
     suspend fun chat(
         principal: UserPrincipal,
-        request: String,
+        request: ChatRequest,
     ): ChatResponse {
         val chatRoom = chatRoomService.getChatRoom(principal)
         val chatRoomId = chatRoom.id!!
@@ -73,7 +75,7 @@ class ChatService(
 
     private suspend fun saveAiChat(
         principal: UserPrincipal,
-        request: String,
+        request: ChatRequest,
         content: String?,
         chatRoomId: String,
     ): Chat {
@@ -92,7 +94,7 @@ class ChatService(
 
     private suspend fun saveHumanChat(
         principal: UserPrincipal,
-        request: String,
+        request: ChatRequest,
         chatRoomId: String,
     ): Chat {
         val chat =
@@ -101,7 +103,7 @@ class ChatService(
                     userId = principal.userId,
                     mbti = principal.mbti,
                     chatRoomId = chatRoomId,
-                    content = request,
+                    content = request.content,
                     chatType = ChatType.HUMAN,
                 ),
             )
@@ -110,13 +112,13 @@ class ChatService(
 
     private suspend fun sendMessageToOpenAI(
         principal: UserPrincipal,
-        request: String,
+        request: ChatRequest,
         previousContent: String,
     ): OpenAIResponse {
         val response: OpenAIResponse =
             openAIClient.sendMessage(
                 mbti = principal.mbti,
-                content = request,
+                content = request.content,
                 previousContent = previousContent,
             )
         return response
