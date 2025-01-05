@@ -29,12 +29,11 @@ class ChatController(
     }
 
     @GetMapping("/chats")
-    fun getChats(
-        @RequestParam chatRoomId: String,
+    fun getRecentChats(
         @RequestParam page: Int,
         @RequestParam size: Int,
         @AuthenticationPrincipal principal: UserPrincipal,
     ): ResponseEntity<*> {
-        return ResponseEntity(chatService.getChats(principal, chatRoomId, page, size), HttpStatus.OK)
+        return ResponseEntity(chatService.getRecentChats(principal, page, size), HttpStatus.OK)
     }
 }

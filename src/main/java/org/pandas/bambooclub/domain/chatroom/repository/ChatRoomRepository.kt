@@ -12,4 +12,10 @@ interface ChatRoomRepository : MongoRepository<ChatRoom, String> {
         userId: String,
         pageable: Pageable,
     ): Page<ChatRoom>
+
+    fun findByUserIdAndYearAndMonth(
+        userId: String,
+        year: Int,
+        month: Int,
+    ): ChatRoom?
 }

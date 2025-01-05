@@ -80,4 +80,12 @@ private final BoardRepository boardRepository;
                 ApiResponse.builder().status(HttpStatus.NO_CONTENT)
                         .build(), HttpStatus.NO_CONTENT);
     }
+
+    @PostMapping("/posts/{postId}/ai-comment")
+    public ResponseEntity<ApiResponse<?>> createAIComment(@PathVariable String postId, @RequestBody PostDetail.Comment comment) {
+        return new ResponseEntity<>(
+                ApiResponse.builder().status(HttpStatus.CREATED)
+                        .data(boardService.createAIComment(postId, comment))
+                        .build(), HttpStatus.CREATED);
+    }
 }

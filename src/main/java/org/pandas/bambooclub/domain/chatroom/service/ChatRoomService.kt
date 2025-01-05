@@ -6,22 +6,49 @@ import org.pandas.bambooclub.domain.chatroom.repository.ChatRoomRepository
 import org.pandas.bambooclub.global.security.UserPrincipal
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 @Service
 class ChatRoomService(
     private val chatRoomRepository: ChatRoomRepository,
 ) {
     fun createChatRoom(principal: UserPrincipal): ChatRoomResponse {
-        val chatRoom =
-            chatRoomRepository.save(
-                ChatRoom(
-                    userId = principal.userId,
-                ),
-            )
+        val now = LocalDateTime.now()
+        val year = now.year
+        val month = now.month.value
+
+        var chatRoom = chatRoomRepository.findByUserIdAndYearAndMonth(principal.userId, year, month)
+
+        if (chatRoom == null) {
+            chatRoom =
+                chatRoomRepository.save(
+                    ChatRoom(
+                        userId = principal.userId,
+                        year = now.year,
+                        month = now.month.value,
+                    ),
+                )
+        }
 
         return ChatRoomResponse(
-            userId = chatRoom.userId,
+            userId = chatRoom!!.userId,
             id = chatRoom.id,
+        )
+    }
+
+    fun getChatRoom(principal: UserPrincipal): ChatRoom {
+        val now = LocalDateTime.now()
+
+        return chatRoomRepository.findByUserIdAndYearAndMonth(
+            principal.userId,
+            now.year,
+            now.monthValue,
+        ) ?: chatRoomRepository.save(
+            ChatRoom(
+                userId = principal.userId,
+                year = now.year,
+                month = now.monthValue,
+            ),
         )
     }
 

@@ -4,9 +4,13 @@ import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletResponse
 import org.pandas.bambooclub.domain.user.dto.LogInRequest
 import org.pandas.bambooclub.domain.user.dto.SignUpRequest
+import org.pandas.bambooclub.domain.user.dto.UserResponse
 import org.pandas.bambooclub.domain.user.model.User
 import org.pandas.bambooclub.domain.user.repository.UserRepository
+import org.pandas.bambooclub.global.exception.ErrorCode
+import org.pandas.bambooclub.global.exception.GlobalException
 import org.pandas.bambooclub.global.security.JwtUtil
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.PostMapping
@@ -33,8 +37,8 @@ class AuthController(
             User(
                 userId = request.userId,
                 password = passwordEncoder.encode(request.password),
-                mbti = request.mbti,
                 nickname = request.nickname,
+                mbti = request.mbti,
             )
         userRepository.save(user)
 
@@ -45,13 +49,13 @@ class AuthController(
     fun login(
         @RequestBody request: LogInRequest,
         response: HttpServletResponse,
-    ): ResponseEntity<String> {
+    ): ResponseEntity<UserResponse> {
         val user =
             userRepository.findByUserId(request.userId)
-                ?: return ResponseEntity.badRequest().body("User not found")
+                ?: throw GlobalException(ErrorCode.RESOURCE_NOT_FOUND)
 
         if (!passwordEncoder.matches(request.password, user.password)) {
-            return ResponseEntity.badRequest().body("Invalid password")
+            throw GlobalException(ErrorCode.INVALID_REQUEST_PARAMETER)
         }
 
         val token = jwtUtil.generateToken(user)
@@ -64,8 +68,14 @@ class AuthController(
                 // secure = true // activate when using https
             }
         response.addCookie(cookie)
+        val userResponse =
+            UserResponse(
+                userId = user.userId,
+                nickname = user.nickname,
+                mbti = user.mbti,
+            )
 
-        return ResponseEntity.ok("Login successful")
+        return ResponseEntity(userResponse, HttpStatus.OK)
     }
 
     @PostMapping("/log-out")

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*
 class ChatRoomController(
     private val chatRoomService: ChatRoomService,
 ) {
+    @Deprecated("no longer using")
     @PostMapping("/chatrooms")
     fun createChatRoom(
         @AuthenticationPrincipal principal: UserPrincipal,

@@ -8,4 +8,7 @@ class ChatRoom(
     @Id
     val id: String? = null,
     val userId: String,
+    val year: Int?,
+    val month: Int?,
+    // TODO: which year which month
 )
