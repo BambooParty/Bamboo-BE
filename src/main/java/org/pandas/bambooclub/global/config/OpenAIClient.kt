@@ -29,15 +29,15 @@ class OpenAIClient(
         val requestBody =
             """
             {
-                "model": "gpt-4",
+                "model": "gpt-3.5-turbo",
                 "messages": [
                     {
                         "role": "system",
-                        "content": "Provide counseling that is effective for people with $mbti personality type, using the approach of $script"
+                        "content": "keep in mind that you are dealing with $mbti personality type"
                     },
                     {
                         "role": "user",
-                        "content": "previousContext: $previousContent, currentContent: $content"
+                        "content": "$script , previousContext: $previousContent, currentContent: $content"
                     }
                 ]
             }
