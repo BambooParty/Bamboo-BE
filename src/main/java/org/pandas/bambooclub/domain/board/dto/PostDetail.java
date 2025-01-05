@@ -1,6 +1,7 @@
 package org.pandas.bambooclub.domain.board.dto;
 
 import lombok.*;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
@@ -8,8 +9,10 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Document(collection = "postDetail")
 public class PostDetail {
-    private String id;
+    private String userId;
+    private String postId;
     // mbti, 제목, 코멘트수, 날짜, 작성자 닉네임, 댓글목록(댓글작성자, 날짜, 내용)
     private String mbti;
     private String title;

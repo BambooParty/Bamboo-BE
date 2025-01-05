@@ -25,6 +25,7 @@ public class RiskController {
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<?>> evaluateRisk(@PathVariable String id, @RequestParam TextType type) throws Exception {
         //id를 통해 해당하는 텍스트 내용을 가져옴
+
         float[] embedding = OpenAiEmbeddingService.getEmbedding("강아지");
         List<Float> similarityScores = pineconeService.queryEmbedding(embedding);
         int riskScore = riskService.calculateWeightedRiskScore(similarityScores);
