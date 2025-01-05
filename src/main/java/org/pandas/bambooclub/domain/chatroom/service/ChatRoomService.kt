@@ -1,9 +1,9 @@
 package org.pandas.bambooclub.domain.chatroom.service
 
-import org.pandas.bambooclub.domain.chatroom.dto.ChatRoomRequest
 import org.pandas.bambooclub.domain.chatroom.dto.ChatRoomResponse
 import org.pandas.bambooclub.domain.chatroom.model.ChatRoom
 import org.pandas.bambooclub.domain.chatroom.repository.ChatRoomRepository
+import org.pandas.bambooclub.global.security.UserPrincipal
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 
@@ -11,11 +11,11 @@ import org.springframework.stereotype.Service
 class ChatRoomService(
     private val chatRoomRepository: ChatRoomRepository,
 ) {
-    fun createChatRoom(request: ChatRoomRequest): ChatRoomResponse {
+    fun createChatRoom(principal: UserPrincipal): ChatRoomResponse {
         val chatRoom =
             chatRoomRepository.save(
                 ChatRoom(
-                    userId = request.userId,
+                    userId = principal.userId,
                 ),
             )
 
@@ -26,12 +26,12 @@ class ChatRoomService(
     }
 
     fun getChatRooms(
-        userId: String,
+        principal: UserPrincipal,
         page: Int,
         size: Int,
     ): List<ChatRoomResponse> {
         val pageable = PageRequest.of(page, size)
-        val chatRooms = chatRoomRepository.findAllByUserId(userId, pageable)
+        val chatRooms = chatRoomRepository.findAllByUserId(principal.userId, pageable)
         return chatRooms.stream()
             .map { chatRoom ->
                 ChatRoomResponse(

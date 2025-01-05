@@ -2,11 +2,14 @@
 
 package org.pandas.bambooclub.domain.chat.controller
 
+import kotlinx.coroutines.runBlocking
 import org.pandas.bambooclub.domain.chat.dto.ChatRequest
 import org.pandas.bambooclub.domain.chat.dto.ChatResponse
 import org.pandas.bambooclub.domain.chat.service.ChatService
+import org.pandas.bambooclub.global.security.UserPrincipal
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
@@ -16,19 +19,22 @@ class ChatController(
     private val chatService: ChatService,
 ) {
     @PostMapping("/chats")
-    suspend fun chat(
+    fun chat(
         @Validated @RequestBody request: ChatRequest,
+        @AuthenticationPrincipal principal: UserPrincipal,
     ): ResponseEntity<ChatResponse> {
-        return ResponseEntity(chatService.chat(request), HttpStatus.OK)
+        return runBlocking {
+            ResponseEntity(chatService.chat(principal, request), HttpStatus.OK)
+        }
     }
 
     @GetMapping("/chats")
     fun getChats(
-        @RequestParam userId: String,
         @RequestParam chatRoomId: String,
         @RequestParam page: Int,
         @RequestParam size: Int,
+        @AuthenticationPrincipal principal: UserPrincipal,
     ): ResponseEntity<*> {
-        return ResponseEntity(chatService.getChats(userId, chatRoomId, page, size), HttpStatus.OK)
+        return ResponseEntity(chatService.getChats(principal, chatRoomId, page, size), HttpStatus.OK)
     }
 }
