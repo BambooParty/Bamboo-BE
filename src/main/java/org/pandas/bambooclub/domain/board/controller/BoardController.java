@@ -69,7 +69,7 @@ private final BoardRepository boardRepository;
     public ResponseEntity<ApiResponse<?>> createComment(@PathVariable String postId, @RequestBody PostDetail.Comment comment) {
         PostDetail post = boardService.getPostDetail(postId);
         List<PostDetail.Comment> comments = post.getComments();
-        comment.setDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        comment.setDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
         if (comments == null) {
             comments = List.of(comment);
         } else {

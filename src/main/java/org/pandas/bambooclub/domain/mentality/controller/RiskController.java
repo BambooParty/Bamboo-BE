@@ -1,20 +1,17 @@
 package org.pandas.bambooclub.domain.mentality.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import org.pandas.bambooclub.domain.board.dto.PostDetail;
+import org.pandas.bambooclub.domain.board.service.BoardService;
 import org.pandas.bambooclub.domain.mentality.dto.RiskHistory;
 import org.pandas.bambooclub.domain.mentality.service.DataSetService;
-import org.pandas.bambooclub.domain.mentality.service.OpenAiEmbeddingService;
 import org.pandas.bambooclub.domain.mentality.service.PineconeService;
 import org.pandas.bambooclub.domain.mentality.service.RiskService;
 import org.pandas.bambooclub.global.ApiResponse;
-import org.pandas.bambooclub.global.TextType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/risk")
@@ -22,6 +19,12 @@ public class RiskController {
     private final DataSetService dataSetService = new DataSetService();
     private final PineconeService pineconeService = new PineconeService();
     private final RiskService riskService = new RiskService();
+
+    private final BoardService BoardService;
+
+    public RiskController(org.pandas.bambooclub.domain.board.service.BoardService boardService) {
+        BoardService = boardService;
+    }
 
 //    @GetMapping("/{id}")
 //    public ResponseEntity<ApiResponse<?>> evaluateRisk(@PathVariable String id, @RequestParam TextType type) throws Exception {
@@ -33,11 +36,12 @@ public class RiskController {
 //    }
 
     @GetMapping("/history/{userId}")
-    public ResponseEntity<ApiResponse<?>> getRiskHistory(@PathVariable String userId) throws Exception {
+    public ResponseEntity<ApiResponse<?>> getRiskHistory(@PathVariable String userId) {
+        List<PostDetail> userPosts = BoardService.getPostPast12Months(userId);
 
         return new ResponseEntity<>(
                 ApiResponse.builder().status(HttpStatus.OK)
-                        .data(RiskHistory.builder().risks(riskService.getRiskHistory(userId)).build())
+                        .data(RiskHistory.builder().risks(riskService.getRiskHistory(userPosts)).build())
                         .build(), HttpStatus.OK);
     }
 

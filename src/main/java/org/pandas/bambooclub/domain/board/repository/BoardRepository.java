@@ -13,6 +13,7 @@ public interface BoardRepository extends MongoRepository<PostDetail, String> {
 
     List<PostDetail> findByUserId(String userId);
 
+    List<PostDetail> findByDateBetweenAndUserId(String startDate, String endDate, String userId);
     PostDetail findByPostId(String postId);
 
 //    @Transactional

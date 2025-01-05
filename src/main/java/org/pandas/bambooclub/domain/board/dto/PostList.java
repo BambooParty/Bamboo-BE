@@ -13,15 +13,4 @@ import java.util.List;
 @AllArgsConstructor
 public class PostList {
     private List<PostDetail> posts;
-
-    @Builder
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class PostSummary {
-        private String title;
-        private String contentSummary;
-        private int commentCount;
-        private String date;
-    }
 }

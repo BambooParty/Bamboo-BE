@@ -7,6 +7,8 @@ import org.pandas.bambooclub.domain.board.repository.BoardRepository;
 import org.pandas.bambooclub.domain.mentality.dto.MbtiCharacters;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -15,6 +17,13 @@ public class BoardService {
 
     public BoardService(BoardRepository boardRepository) {
         this.boardRepository = boardRepository;
+    }
+
+    public List<PostDetail> getPostPast12Months(String userId) {
+        String startDate = LocalDateTime.now().minusMonths(12).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String endDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        //DB에서 userId로 조회
+        return boardRepository.findByDateBetweenAndUserId(startDate, endDate, userId);
     }
 
     public PostList getPostList(String mbti, String userId) {
@@ -54,4 +63,6 @@ public class BoardService {
     public void deletePost(String postId) {
         boardRepository.deleteById(postId);
     }
+
+
 }

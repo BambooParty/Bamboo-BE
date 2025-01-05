@@ -1,11 +1,18 @@
 package org.pandas.bambooclub.domain.mentality.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.pandas.bambooclub.domain.board.dto.PostDetail;
+import org.pandas.bambooclub.domain.board.dto.PostList;
+import org.pandas.bambooclub.domain.board.service.BoardService;
 import org.pandas.bambooclub.domain.mentality.dto.RiskHistory;
 
-import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class RiskService {
+
     public static int getRiskScore(String inputText) throws JsonProcessingException {
         float[] embedding = OpenAiEmbeddingService.getEmbedding(inputText);
         List<Float> similarityScores = PineconeService.queryEmbedding(embedding);
@@ -45,27 +52,74 @@ public class RiskService {
         }
     }
 
-    public List<RiskHistory.Risk> getRiskHistory(String userId) {
-        // 최근 12개월 간의 사용자 위험도 기록을 가져옴
+    public List<RiskHistory.Risk> getRiskHistory(List<PostDetail> userPosts) {
+        // 월별로 riskScore 평균을 냄
+        List<RiskHistory.Risk> result = calculateMonthlyRiskScore(userPosts);
+        return result;
 
-        // 월별로 평균을 냄
+    }
 
-        // 위험도 점수와 등록월을 Risk 객체로 변환
+    private List<RiskHistory.Risk> calculateMontlyRiskScore(List<PostDetail> userPosts) {
+        List<RiskHistory.Risk> result = new ArrayList<>();
+        // 월별로 해서 12개의 Risk 객체를 만들어야 함
+        Map<String, RiskHistory.Risk> montlyRiskScore = new HashMap<>();
+        userPosts.forEach(post -> {
+            String month = post.getDate();
+            int riskScore = post.getRiskScore();
+            if (montlyRiskScore.containsKey(month)) {
+                RiskHistory.Risk risk = montlyRiskScore.get(month);
+                risk.setScore(risk.getScore() + riskScore);
+            } else {
+                montlyRiskScore.put(month, RiskHistory.Risk.builder().score(riskScore).month(month).build());
+            }
+        });
+        montlyRiskScore.forEach((key, value) -> {
+            value.setScore(value.getScore() / userPosts.size());
+            result.add(value);
+        });
+        return result;
+    }
 
-        return List.of(
-                RiskHistory.Risk.builder().score(50).month("1").build(),
-                RiskHistory.Risk.builder().score(70).month("2").build(),
-                RiskHistory.Risk.builder().score(90).month("3").build(),
-                RiskHistory.Risk.builder().score(30).month("4").build(),
-                RiskHistory.Risk.builder().score(40).month("5").build(),
-                RiskHistory.Risk.builder().score(60).month("6").build(),
-                RiskHistory.Risk.builder().score(80).month("7").build(),
-                RiskHistory.Risk.builder().score(20).month("8").build(),
-                RiskHistory.Risk.builder().score(10).month("9").build(),
-                RiskHistory.Risk.builder().score(70).month("10").build(),
-                RiskHistory.Risk.builder().score(90).month("11").build(),
-                RiskHistory.Risk.builder().score(100).month("12").build()
-        );
+    private List<RiskHistory.Risk> calculateMonthlyRiskScore(List<PostDetail> userPosts) {
+        List<RiskHistory.Risk> result = new ArrayList<>();
 
+        // 시작 월과 종료 월 설정
+        LocalDate startDate = LocalDate.now().minusMonths(11).withDayOfMonth(1); // 11개월 전의 첫날
+        LocalDate endDate = LocalDate.now().withDayOfMonth(1); // 현재 월의 첫날
+
+        // 모든 월을 초기화 (점수 0)
+        Map<String, RiskHistory.Risk> monthlyRiskScore = new LinkedHashMap<>();
+        Map<String, Integer> monthlyRiskScoreCount = new LinkedHashMap<>();
+        LocalDate currentDate = startDate;
+        while (!currentDate.isAfter(endDate)) {
+            String yearMonth = currentDate.format(DateTimeFormatter.ofPattern("yyyyMM"));
+            monthlyRiskScore.put(yearMonth, RiskHistory.Risk.builder().month(yearMonth).score(0).build());
+            monthlyRiskScoreCount.put(yearMonth, 0);
+            currentDate = currentDate.plusMonths(1); // 다음 달로 이동
+        }
+
+        // 사용자 게시물 데이터를 기반으로 점수 계산
+
+        userPosts.forEach(post -> {
+            String postYearMonth = post.getDate().substring(0, 6); // yyyyMM 추출
+            if (monthlyRiskScore.containsKey(postYearMonth)) {
+                RiskHistory.Risk risk = monthlyRiskScore.get(postYearMonth);
+                risk.setScore(risk.getScore() + post.getRiskScore());
+                monthlyRiskScoreCount.put(postYearMonth, monthlyRiskScoreCount.get(postYearMonth) + 1);
+            }
+        });
+
+        // 평균 점수 계산
+        monthlyRiskScore.forEach((key, value) -> {
+            int count = monthlyRiskScoreCount.get(key);
+            if (count > 0) {
+                value.setScore(value.getScore() / count);
+            }
+        });
+
+        // 결과 리스트로 변환
+        result.addAll(monthlyRiskScore.values());
+
+        return result;
     }
 }
