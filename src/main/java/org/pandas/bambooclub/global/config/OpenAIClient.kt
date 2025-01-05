@@ -65,7 +65,7 @@ class OpenAIClient(
                     },
                     {
                         "role": "user",
-                        "content": "다음 내용에 대해 $mbti 인 사람에게 답글을 써줘: $content"
+                        "content": "이전 내용은 맥락파악에만 쓰고 답장은 이번 내용에만 해줘 한 문장으로 답장해줘, 다음 내용에 대해 $mbti 인 사람에게 답글을 써줘: $content"
                     }
                 ]
             }
