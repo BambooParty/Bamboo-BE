@@ -1,10 +1,10 @@
 package org.pandas.bambooclub.domain.chatroom.controller
 
-import org.pandas.bambooclub.domain.chatroom.dto.ChatRoomRequest
 import org.pandas.bambooclub.domain.chatroom.service.ChatRoomService
+import org.pandas.bambooclub.global.security.UserPrincipal
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.validation.annotation.Validated
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -14,17 +14,17 @@ class ChatRoomController(
 ) {
     @PostMapping("/chatrooms")
     fun createChatRoom(
-        @Validated @RequestBody request: ChatRoomRequest,
+        @AuthenticationPrincipal principal: UserPrincipal,
     ): ResponseEntity<*> {
-        return ResponseEntity(chatRoomService.createChatRoom(request), HttpStatus.OK)
+        return ResponseEntity(chatRoomService.createChatRoom(principal), HttpStatus.OK)
     }
 
     @GetMapping("/chatrooms")
     fun getChatRooms(
-        @RequestParam userId: String,
+        @AuthenticationPrincipal principal: UserPrincipal,
         @RequestParam page: Int,
         @RequestParam size: Int,
     ): ResponseEntity<*> {
-        return ResponseEntity(chatRoomService.getChatRooms(userId, page, size), HttpStatus.OK)
+        return ResponseEntity(chatRoomService.getChatRooms(principal, page, size), HttpStatus.OK)
     }
 }
