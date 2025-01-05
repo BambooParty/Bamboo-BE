@@ -25,7 +25,7 @@ class ChatService(
     ): ChatResponse {
         saveHumanChat(principal, request)
         val list = chatRepository.findAllByUserIdAndChatRoomIdAndChatType(principal.userId, request.chatRoomId, ChatType.HUMAN)
-        val previousContent = "" // convertPreviousContent(list)
+        val previousContent = convertPreviousContent(list)
         val response = sendMessageToOpenAI(principal, request, previousContent)
         val content: String? = response?.choices?.get(0)?.message?.content ?: ""
         val aiChat = saveAiChat(principal, request, content)
@@ -33,7 +33,8 @@ class ChatService(
     }
 
     private fun convertPreviousContent(list: List<Chat>): String {
-        val result: String = list.joinToString("\n") { it.content ?: "" }
+        val result: String = list.joinToString(" ") { it.content ?: "" }
+        logger.info("content")
         logger.info(result)
         return result
     }
