@@ -34,6 +34,7 @@ class AuthController(
                 userId = request.userId,
                 password = passwordEncoder.encode(request.password),
                 mbti = request.mbti,
+                nickname = request.nickname,
             )
         userRepository.save(user)
 
