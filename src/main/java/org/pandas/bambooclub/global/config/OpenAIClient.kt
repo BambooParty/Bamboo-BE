@@ -37,7 +37,7 @@ class OpenAIClient(
                     },
                     {
                         "role": "user",
-                        "content": "$script , previousContext: $previousContent, currentContent: $content"
+                        "content": "이전 내용은 맥락파악에만 쓰고 답장은 이번 내용에만 해줘 한 문장으로 답장해줘 , previousContext: $previousContent, currentContent: $content"
                     }
                 ]
             }
