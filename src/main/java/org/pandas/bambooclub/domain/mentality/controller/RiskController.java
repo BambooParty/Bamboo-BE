@@ -26,15 +26,6 @@ public class RiskController {
         BoardService = boardService;
     }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<ApiResponse<?>> evaluateRisk(@PathVariable String id, @RequestParam TextType type) throws Exception {
-//        //id를 통해 해당하는 텍스트 내용을 가져옴
-//        return new ResponseEntity<>(
-//                ApiResponse.builder().status(HttpStatus.OK)
-//                        .data(Map.of("riskScore", RiskService.getRiskScore()))
-//                        .build(), HttpStatus.OK);
-//    }
-
     @GetMapping("/history/{userId}")
     public ResponseEntity<ApiResponse<?>> getRiskHistory(@PathVariable String userId) {
         List<PostDetail> userPosts = BoardService.getPostPast12Months(userId);

@@ -29,6 +29,10 @@ public class PostDetail {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Comment {
+        private String userId;
+        private String postId;
+        @Id
+        private String commentId;
         private String nickname;
         private String date;
         private String content;

@@ -67,24 +67,15 @@ private final BoardRepository boardRepository;
 
     @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<ApiResponse<?>> createComment(@PathVariable String postId, @RequestBody PostDetail.Comment comment) {
-        PostDetail post = boardService.getPostDetail(postId);
-        List<PostDetail.Comment> comments = post.getComments();
-        comment.setDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
-        if (comments == null) {
-            comments = List.of(comment);
-        } else {
-            comments.add(comment);
-        }
-        post.setComments(comments);
         return new ResponseEntity<>(
                 ApiResponse.builder().status(HttpStatus.CREATED)
-                        .data(boardRepository.save(post))
+                        .data(boardService.createComment(postId, comment))
                         .build(), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<ApiResponse<?>> deleteComment(@PathVariable String commentId) {
-        //TODO: postService.deleteComment();
+        boardService.deleteComment(commentId);
         return new ResponseEntity<>(
                 ApiResponse.builder().status(HttpStatus.NO_CONTENT)
                         .build(), HttpStatus.NO_CONTENT);
