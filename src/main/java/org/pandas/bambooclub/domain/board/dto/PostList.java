@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostList {
-    private List<PostSummary> posts;
+    private List<PostDetail> posts;
 
     @Builder
     @Data

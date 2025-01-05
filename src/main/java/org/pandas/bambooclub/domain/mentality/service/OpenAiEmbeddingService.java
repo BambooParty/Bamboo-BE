@@ -3,7 +3,7 @@ package org.pandas.bambooclub.domain.mentality.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Value;
+import org.pandas.bambooclub.global.config.RiskApiConfig;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -11,15 +11,13 @@ import org.springframework.web.client.RestTemplate;
 public class OpenAiEmbeddingService {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     public static final String EMBEDDING_URL = "https://api.openai.com/v1/embeddings";
-    @Value("${openai.api-key}")
-    private static String OPENAI_API_KEY;
 
     public static float[] getEmbedding(String text) throws JsonProcessingException {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(OPENAI_API_KEY);
+        headers.setBearerAuth(RiskApiConfig.getOpenAiKey());
 
         String requestBody = "{ \"input\": \"" + text + "\", \"model\": \"text-embedding-ada-002\" }";
         HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class PostRegister {
 
     @JsonUnwrapped
-    private PostRegisterRequest post;
+    private PostDetail post;
     private int riskScore;
 
     @Builder

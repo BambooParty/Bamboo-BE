@@ -18,23 +18,17 @@ public class BoardService {
     }
 
     public PostList getPostList(String mbti, String userId) {
+        List<PostDetail> result = null;
         if (userId == null) {//mbti를 MbtiCharacters으로 분류
             MbtiCharacters mbtiOption = MbtiCharacters.makeMbti(mbti);
-
             //DB에서 Mbti별로 조회
         } else {
             //DB에서 userId로 조회
+            result = boardRepository.findByUserId(userId);
         }
 
         PostList postList = PostList.builder()
-                .posts(List.of(
-                        PostList.PostSummary.builder()
-                                .title("제목")
-                                .contentSummary("내용 100자 까지만")
-                                .commentCount(4)
-                                .date("2025-01-01")
-                                .build()
-                ))
+                .posts(result)
                 .build();
 
         return postList;
@@ -62,16 +56,8 @@ public class BoardService {
         return null;
     }
 
-    public PostDetail createPost(PostRegister.PostRegisterRequest postRegister) {
-        // PostRegister를 PostDetail로 변환
-        PostDetail postDetail = PostDetail.builder()
-                .mbti(postRegister.getMbti())
-                .title(postRegister.getTitle())
-                .nickname(postRegister.getNickname())
-                .commentCount(0) // 댓글 수 초기화
-                .build();
-
+    public PostDetail createPost(PostDetail postRegister) {
         // MongoDB에 저장
-        return boardRepository.save(postDetail);
+        return boardRepository.save(postRegister);
     }
 }

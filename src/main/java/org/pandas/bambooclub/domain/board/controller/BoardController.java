@@ -1,14 +1,20 @@
 package org.pandas.bambooclub.domain.board.controller;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.pandas.bambooclub.domain.board.dto.PostDetail;
 import org.pandas.bambooclub.domain.board.dto.PostRegister;
 import org.pandas.bambooclub.domain.board.repository.BoardRepository;
 import org.pandas.bambooclub.domain.board.service.BoardService;
+import org.pandas.bambooclub.domain.mentality.service.RiskService;
 import org.pandas.bambooclub.global.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -22,7 +28,6 @@ private final BoardRepository boardRepository;
 
     @GetMapping("/posts") //나의 목록, 전체목록 2개 케이스
     public ResponseEntity<ApiResponse<?>> getPostList(@RequestParam String mbti, @RequestParam String userId) {
-
         return new ResponseEntity<>(
                 ApiResponse.builder().status(HttpStatus.OK)
                         .data(boardService.getPostList(mbti, userId))
@@ -38,14 +43,16 @@ private final BoardRepository boardRepository;
     }
 
     @PostMapping("/posts")
-    public ResponseEntity<ApiResponse<?>> createPost(@RequestBody PostRegister.PostRegisterRequest post) {
+    public ResponseEntity<ApiResponse<?>> createPost(@RequestBody PostDetail post) throws JsonProcessingException {
         //등록 전 위험도 평가 후 같이 등록
+        int score = RiskService.getRiskScore(post.getContent());
+        post.setRiskScore(score);
+        post.setDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMM")));
         boardService.createPost(post);
         return new ResponseEntity<>(
                 ApiResponse.builder().status(HttpStatus.CREATED)
                         .data(PostRegister.builder()
                                 .post(post)
-                                .riskScore(70)
                                 .build())
                         .build(), HttpStatus.CREATED);
     }

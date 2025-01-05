@@ -18,6 +18,8 @@ public class PostDetail {
     private String title;
     private String date;
     private String nickname;
+    private int riskScore;
+    private String content;
     private List<Comment> comments;
     private int commentCount;
 

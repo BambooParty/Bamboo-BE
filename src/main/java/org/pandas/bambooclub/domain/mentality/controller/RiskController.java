@@ -1,5 +1,6 @@
 package org.pandas.bambooclub.domain.mentality.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.pandas.bambooclub.domain.mentality.dto.RiskHistory;
 import org.pandas.bambooclub.domain.mentality.service.DataSetService;
 import org.pandas.bambooclub.domain.mentality.service.OpenAiEmbeddingService;
@@ -22,18 +23,14 @@ public class RiskController {
     private final PineconeService pineconeService = new PineconeService();
     private final RiskService riskService = new RiskService();
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<?>> evaluateRisk(@PathVariable String id, @RequestParam TextType type) throws Exception {
-        //id를 통해 해당하는 텍스트 내용을 가져옴
-
-        float[] embedding = OpenAiEmbeddingService.getEmbedding("강아지");
-        List<Float> similarityScores = pineconeService.queryEmbedding(embedding);
-        int riskScore = riskService.calculateWeightedRiskScore(similarityScores);
-        return new ResponseEntity<>(
-                ApiResponse.builder().status(HttpStatus.OK)
-                        .data(Map.of("riskScore", Math.min(100, riskScore)))
-                        .build(), HttpStatus.OK);
-    }
+//    @GetMapping("/{id}")
+//    public ResponseEntity<ApiResponse<?>> evaluateRisk(@PathVariable String id, @RequestParam TextType type) throws Exception {
+//        //id를 통해 해당하는 텍스트 내용을 가져옴
+//        return new ResponseEntity<>(
+//                ApiResponse.builder().status(HttpStatus.OK)
+//                        .data(Map.of("riskScore", RiskService.getRiskScore()))
+//                        .build(), HttpStatus.OK);
+//    }
 
     @GetMapping("/history/{userId}")
     public ResponseEntity<ApiResponse<?>> getRiskHistory(@PathVariable String userId) throws Exception {

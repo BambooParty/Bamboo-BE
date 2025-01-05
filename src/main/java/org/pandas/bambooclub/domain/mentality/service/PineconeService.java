@@ -2,7 +2,7 @@ package org.pandas.bambooclub.domain.mentality.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Value;
+import org.pandas.bambooclub.global.config.RiskApiConfig;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -12,18 +12,16 @@ import java.util.List;
 import java.util.Map;
 
 public class PineconeService {
-    @Value("${pinecone.api-key}")
-    private static String PINECONE_API_KEY;
     private static final String PINECONE_URL_QUERY = "https://bamboo-xss5t7t.svc.aped-4627-b74a.pinecone.io/query";
     private static final String PINECONE_URL_UPSERT = "https://bamboo-xss5t7t.svc.aped-4627-b74a.pinecone.io/vectors/upsert";
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
-    private final RestTemplate restTemplate = new RestTemplate();
-    public List<Float> queryEmbedding(float[] embedding) throws JsonProcessingException {
+    private static final RestTemplate restTemplate = new RestTemplate();
+    public static List<Float> queryEmbedding(float[] embedding) throws JsonProcessingException {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Api-Key", PINECONE_API_KEY);
+        headers.set("Api-Key", RiskApiConfig.getPineconeApiKey());
 
         String requestBody = "{ \"vector\": " + Arrays.toString(embedding) + ", \"topK\": 3, \"includeMetadata\": true }";
         HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
@@ -43,7 +41,7 @@ public class PineconeService {
         return similarities;
     }
 
-    private List<Float> parseSimilarityScoresAdjusted(String jsonResponse) throws JsonProcessingException {
+    private static List<Float> parseSimilarityScoresAdjusted(String jsonResponse) throws JsonProcessingException {
         JsonNode rootNode = objectMapper.readTree(jsonResponse);
         List<Float> adjustedSimilarities = new ArrayList<>();
 
@@ -68,7 +66,7 @@ public class PineconeService {
     public String upsertVectors(List<Map<String, Object>> vectors) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Api-Key", PINECONE_API_KEY);
+        headers.set("Api-Key", RiskApiConfig.getPineconeApiKey());
 
         Map<String, Object> requestBody = Map.of(
                 "vectors", vectors

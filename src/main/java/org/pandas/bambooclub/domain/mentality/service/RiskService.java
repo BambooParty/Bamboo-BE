@@ -1,10 +1,17 @@
 package org.pandas.bambooclub.domain.mentality.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.pandas.bambooclub.domain.mentality.dto.RiskHistory;
 
 import java.util.List;
 
 public class RiskService {
+    public static int getRiskScore(String inputText) throws JsonProcessingException {
+        float[] embedding = OpenAiEmbeddingService.getEmbedding(inputText);
+        List<Float> similarityScores = PineconeService.queryEmbedding(embedding);
+        return calculateWeightedRiskScore(similarityScores);
+    }
+
     // 평균 점수 계산
     public int calculateRisk(List<Float> similarityScores) {
         float averageScore = similarityScores.stream().reduce(0f, Float::sum) / similarityScores.size();
@@ -12,7 +19,7 @@ public class RiskService {
     }
 
     // 가중 평균 점수 계산
-    public int calculateWeightedRiskScore(List<Float> similarities) {
+    public static int calculateWeightedRiskScore(List<Float> similarities) {
         float weightedSum = 0;
         int weightSum = 0;
         int weight = similarities.size(); // 가중치: 가장 높은 유사도가 가장 큰 가중치
@@ -22,8 +29,7 @@ public class RiskService {
             weightSum += weight;          // 가중치 누적
             weight--;                     // 다음 유사도에 낮은 가중치 할당
         }
-
-        return Math.round((weightedSum / weightSum) * 100); // 최종 점수를 100 단위로 변환
+        return Math.min(100, Math.round((weightedSum / weightSum) * 100));
     }
 
     // 점수에 따른 상태 분류
