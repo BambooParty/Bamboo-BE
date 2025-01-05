@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -58,18 +59,26 @@ private final BoardRepository boardRepository;
 
     @DeleteMapping("/posts/{postId}")
     public ResponseEntity<ApiResponse<?>> deletePost(@PathVariable String postId) {
-        //TODO: postService.deletePost(postId);
-
+        boardService.deletePost(postId);
         return new ResponseEntity<>(
                 ApiResponse.builder().status(HttpStatus.NO_CONTENT)
                         .build(), HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping("/comments")
-    public ResponseEntity<ApiResponse<?>> createComment(@RequestBody PostDetail.Comment comment) {
-        //TODO: postService.createComment();
+    @PostMapping("/posts/{postId}/comments")
+    public ResponseEntity<ApiResponse<?>> createComment(@PathVariable String postId, @RequestBody PostDetail.Comment comment) {
+        PostDetail post = boardService.getPostDetail(postId);
+        List<PostDetail.Comment> comments = post.getComments();
+        comment.setDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        if (comments == null) {
+            comments = List.of(comment);
+        } else {
+            comments.add(comment);
+        }
+        post.setComments(comments);
         return new ResponseEntity<>(
                 ApiResponse.builder().status(HttpStatus.CREATED)
+                        .data(boardRepository.save(post))
                         .build(), HttpStatus.CREATED);
     }
 

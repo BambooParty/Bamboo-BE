@@ -36,20 +36,6 @@ public class BoardService {
 
     public PostDetail getPostDetail(String postId) {
         return boardRepository.findByPostId(postId);
-//        PostDetail.builder()
-//                .mbti("ENFP")
-//                .title("제목")
-//                .date("2025-01-01")
-//                .nickname("작성자")
-//                .commentCount(4)
-//                .comments(List.of(
-//                        PostDetail.Comment.builder()
-//                                .nickname("작성자")
-//                                .date("2025-01-01")
-//                                .content("내용")
-//                                .build()
-//                ))
-//                .build();
     }
 
     public Object getMyPostList(String postType, String userId) {
@@ -59,5 +45,13 @@ public class BoardService {
     public PostDetail createPost(PostDetail postRegister) {
         // MongoDB에 저장
         return boardRepository.save(postRegister);
+    }
+
+    public PostDetail putPost(String postId, PostDetail post) {
+       return boardRepository.save(post);
+    }
+
+    public void deletePost(String postId) {
+        boardRepository.deleteById(postId);
     }
 }
