@@ -9,6 +9,6 @@ data class User(
     val id: String? = null,
     val userId: String,
     val password: String,
-    val nickname: String?,
+    val nickname: String,
     val mbti: String,
 )
