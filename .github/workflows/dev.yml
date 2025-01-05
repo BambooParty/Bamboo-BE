@@ -1,0 +1,60 @@
+name: Build and Push Docker Image
+
+on:
+  workflow_dispatch: # 수동 실행
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    env:
+      API_KEY: ${{ secrets.API_KEY }}
+      MONGODB_URI: ${{ secrets.MONGODB_URI }}
+
+    steps:
+    # 1. 코드 체크아웃
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # 2. Java 빌드 도구 세팅
+    - name: Set up JDK 21
+      uses: actions/setup-java@v3
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x ./gradlew
+
+    # 3. Gradle 캐시 설정
+    - name: Cache Gradle packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.gradle/caches
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    # 4. 프로젝트 빌드 (Gradle)
+    - name: Build Spring Boot App (Gradle)
+      run: ./gradlew clean build -x test
+      
+
+    - name: List build/libs directory
+      run: ls -l build/libs/
+
+    # 5. Docker 로그인
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+    # 6. Docker 이미지 빌드 및 태그
+    - name: Build Docker Image
+      run: |
+        docker build --build-arg JAR_FILE=build/libs/BambooClub-0.0.1-SNAPSHOT.jar -t ${{ secrets.DOCKERHUB_USERNAME }}/bamboo-be:latest .
+
+    # 7. Docker 이미지 푸시
+    - name: Push Docker Image
+      run: |
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/bamboo-be:latest
