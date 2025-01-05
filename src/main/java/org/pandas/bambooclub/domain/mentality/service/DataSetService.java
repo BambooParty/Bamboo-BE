@@ -2,6 +2,7 @@ package org.pandas.bambooclub.domain.mentality.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -12,11 +13,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.pandas.bambooclub.global.Define.OPENAI_API_KEY;
 import static org.pandas.bambooclub.global.Define.TEXT_COMPLETION_URL;
 
 public class DataSetService {
     private static final ObjectMapper objectMapper = new ObjectMapper();
+    @Value("${openai.api-key}")
+    private static String OPENAI_API_KEY;
     public String createDataSet() throws Exception {
         // 위험 텍스트 생성
         String riskPrompt = "자살 위험이 높은 사람이 사용할 가능성이 있는 문장 작성하세요";

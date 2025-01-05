@@ -3,14 +3,16 @@ package org.pandas.bambooclub.domain.mentality.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
 import static org.pandas.bambooclub.global.Define.EMBEDDING_URL;
-import static org.pandas.bambooclub.global.Define.OPENAI_API_KEY;
 
 public class OpenAiEmbeddingService {
     private static final ObjectMapper objectMapper = new ObjectMapper();
+    @Value("${openai.api-key}")
+    private static String OPENAI_API_KEY;
 
     public static float[] getEmbedding(String text) throws JsonProcessingException {
         RestTemplate restTemplate = new RestTemplate();

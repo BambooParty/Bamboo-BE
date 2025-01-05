@@ -2,6 +2,7 @@ package org.pandas.bambooclub.domain.mentality.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -11,7 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 public class PineconeService {
-    private static final String PINECONE_API_KEY = "pcsk_5g3Gpt_FitZWX4ScBJgkzrKAnKLYN3TVfQhYQTzwDRZimbzR7Ys549Vkbs8HXKxpZaPg79";
+    @Value("${pinecone.api-key}")
+    private static String PINECONE_API_KEY;
     private static final String PINECONE_URL_QUERY = "https://bamboo-xss5t7t.svc.aped-4627-b74a.pinecone.io/query";
     private static final String PINECONE_URL_UPSERT = "https://bamboo-xss5t7t.svc.aped-4627-b74a.pinecone.io/vectors/upsert";
 
