@@ -1,7 +1,7 @@
 package org.pandas.bambooclub.domain.board.service;
 
+import org.pandas.bambooclub.domain.aicomment.service.AICommentService;
 import org.pandas.bambooclub.domain.board.dto.PostDetail;
-import org.pandas.bambooclub.domain.board.dto.PostList;
 import org.pandas.bambooclub.domain.board.repository.BoardRepository;
 import org.pandas.bambooclub.domain.board.repository.CommentRepository;
 import org.pandas.bambooclub.domain.mentality.dto.MbtiCharacters;
@@ -16,10 +16,12 @@ import java.util.List;
 public class BoardService {
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
+    private final AICommentService aiCommentService;
 
-    public BoardService(BoardRepository boardRepository, CommentRepository commentRepository) {
+    public BoardService(BoardRepository boardRepository, CommentRepository commentRepository, AICommentService aiCommentService) {
         this.boardRepository = boardRepository;
         this.commentRepository = commentRepository;
+        this.aiCommentService = aiCommentService;
     }
 
     public List<PostDetail> getPostPast12Months(String userId) {
@@ -70,6 +72,15 @@ public class BoardService {
     public PostDetail.Comment createComment(String postId, PostDetail.Comment comment) {
         comment.setPostId(postId);
         comment.setDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+        return commentRepository.save(comment);
+    }
+
+    public PostDetail.Comment createAIComment(String postId, PostDetail.Comment comment) {
+        comment.setPostId(postId);
+        comment.setDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+        comment.setUserId("AI");
+        PostDetail postDetail = boardRepository.findByPostId(postId);
+        comment.setContent(aiCommentService.getComment(postDetail.getContent(), postDetail.getMbti()));
         return commentRepository.save(comment);
     }
 
