@@ -34,6 +34,10 @@ dependencies {
     implementation "io.pinecone:pinecone-client:3.0.0"
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
 
+    // lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
 }
 
 tasks.named('test') {

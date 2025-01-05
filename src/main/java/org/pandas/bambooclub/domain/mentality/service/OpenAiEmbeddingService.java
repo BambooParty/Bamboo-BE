@@ -12,7 +12,7 @@ import static org.pandas.bambooclub.global.Define.OPENAI_API_KEY;
 public class OpenAiEmbeddingService {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public float[] getEmbedding(String text) throws JsonProcessingException {
+    public static float[] getEmbedding(String text) throws JsonProcessingException {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -27,7 +27,7 @@ public class OpenAiEmbeddingService {
         return parseEmbedding(response.getBody());
     }
 
-    private float[] parseEmbedding(String jsonResponse) throws JsonProcessingException {
+    private static float[] parseEmbedding(String jsonResponse) throws JsonProcessingException {
 /*
 {
   "object": "list",

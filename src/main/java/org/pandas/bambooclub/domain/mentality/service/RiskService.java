@@ -1,8 +1,10 @@
 package org.pandas.bambooclub.domain.mentality.service;
 
+import org.pandas.bambooclub.domain.mentality.dto.RiskHistory;
+
 import java.util.List;
 
-public class RiskCalculator {
+public class RiskService {
     // 평균 점수 계산
     public int calculateRisk(List<Float> similarityScores) {
         float averageScore = similarityScores.stream().reduce(0f, Float::sum) / similarityScores.size();
@@ -35,5 +37,29 @@ public class RiskCalculator {
         } else {
             return "긴급";
         }
+    }
+
+    public List<RiskHistory.Risk> getRiskHistory(String userId) {
+        // 최근 12개월 간의 사용자 위험도 기록을 가져옴
+
+        // 월별로 평균을 냄
+
+        // 위험도 점수와 등록월을 Risk 객체로 변환
+
+        return List.of(
+                RiskHistory.Risk.builder().score(50).month("1").build(),
+                RiskHistory.Risk.builder().score(70).month("2").build(),
+                RiskHistory.Risk.builder().score(90).month("3").build(),
+                RiskHistory.Risk.builder().score(30).month("4").build(),
+                RiskHistory.Risk.builder().score(40).month("5").build(),
+                RiskHistory.Risk.builder().score(60).month("6").build(),
+                RiskHistory.Risk.builder().score(80).month("7").build(),
+                RiskHistory.Risk.builder().score(20).month("8").build(),
+                RiskHistory.Risk.builder().score(10).month("9").build(),
+                RiskHistory.Risk.builder().score(70).month("10").build(),
+                RiskHistory.Risk.builder().score(90).month("11").build(),
+                RiskHistory.Risk.builder().score(100).month("12").build()
+        );
+
     }
 }

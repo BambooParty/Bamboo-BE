@@ -19,8 +19,8 @@ public class DataSetService {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     public String createDataSet() throws Exception {
         // 위험 텍스트 생성
-        String riskPrompt = "자살 위험이 높은 사람이 사용할 가능성이 있는 문장을 5개 작성하세요. 단, 응답할 때 문장 앞에 숫자를 붙이지 마세요.";
-        String riskTexts = generateRiskTexts(riskPrompt, 5);
+        String riskPrompt = "자살 위험이 높은 사람이 사용할 가능성이 있는 문장 작성하세요";
+        String riskTexts = generateRiskTexts(riskPrompt, 1);
 
 //        // 출력 위험 텍스트
         System.out.println("Generated Risk Texts:");
