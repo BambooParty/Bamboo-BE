@@ -12,7 +12,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1")
 public class BoardController {
-    private final PostService postService =  new PostService();
+    private final PostService postService;
+
+    public BoardController(PostService postService) {
+        this.postService = postService;
+    }
+
     @GetMapping("/posts") //나의 목록, 전체목록 2개 케이스
     public ResponseEntity<ApiResponse<?>> getPostList(@RequestParam String mbti, @RequestParam String userId) {
 
