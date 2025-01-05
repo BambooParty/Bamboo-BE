@@ -49,4 +49,32 @@ class OpenAIClient(
             .retrieve()
             .awaitBody()
     }
+
+    suspend fun getComment(
+        mbti: String,
+        content: String,
+    ): OpenAIResponse {
+        val requestBody =
+            """
+            {
+                "model": "gpt-3.5-turbo",
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": "keep in mind that you are dealing with $mbti personality type"
+                    },
+                    {
+                        "role": "user",
+                        "content": "다음 내용에 대해 $mbti 인 사람에게 답글을 써줘: $content"
+                    }
+                ]
+            }
+            
+            """.trimIndent()
+
+        return webClient.post()
+            .bodyValue(requestBody)
+            .retrieve()
+            .awaitBody()
+    }
 }
