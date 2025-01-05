@@ -29,7 +29,7 @@ class SecurityConfig(
                 UsernamePasswordAuthenticationFilter::class.java,
             )
             .authorizeHttpRequests {
-                it.requestMatchers("/api/auth/**").permitAll()
+                it.requestMatchers("/api/v1/auth/**").permitAll()
                     .requestMatchers("/api/v1/chats/**").authenticated()
                     .anyRequest().authenticated()
             }
